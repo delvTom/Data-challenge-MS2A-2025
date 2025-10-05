@@ -18,37 +18,9 @@ The challenge focuses on:
 - Managing **distribution shifts** between training and testing sets  
 - Designing efficient and interpretable regression models  
 
----
+The competition evaluates models using a custom **weighted RMSE**,  
+which penalizes more heavily errors on critical alarm levels (predicted ≥ 0.5).
 
-## 📏 Evaluation Metric – Root Weighted Mean Squared Error (RW-MSE)
-
-The evaluation metric is a **root mean squared error with per-target weighting** that penalizes underestimation of critical alarms.
-
-For each sample, the weighted squared error is:
-
-\[
-E = \frac{1}{23} \sum_{i=1}^{23} f_i (c_i - \hat{c}_i)^2
-\]
-
-where the weights \(f_i\) are defined as:
-
-\[
-f_i =
-\begin{cases}
-1 & \text{if } \hat{c}_i < 0.5 \\
-1.2 & \text{if } \hat{c}_i \ge 0.5
-\end{cases}
-\]
-
-The final score is the square root of the mean error across all samples:
-
-\[
-\text{Score} = \sqrt{\frac{1}{N} \sum_{n=1}^{N} E_n}
-\]
-
-➡️ This formulation gives more importance to cases where an alarm should be triggered (predicted level ≥ 0.5).
-
----
 
 ## 🚧 Current Progress (October 2025)
 
@@ -66,69 +38,30 @@ The project currently includes three main steps:
 ### 2️⃣ **Baseline Model – Random Forest**  
 - Implemented `RandomForestRegressor` with `MultiOutputRegressor`  
 - Established a first baseline with **public score ≈ 0.1523 (RW-MSE)**  
-📘 Notebook: [`02_baseline_rand]()
-
----
-
-## 📏 Evaluation Metric – Root Weighted Mean Squared Error (RW-MSE)
-
-The competition evaluates models using a Root Weighted Mean Squared Error (RW-MSE).
-
-For each sample:
-E = (1/23) * Σ f_i * (c_i - ĉ_i)²
-
-where:
-- f_i = 1 if ĉ_i < 0.5  
-- f_i = 1.2 if ĉ_i ≥ 0.5  
-
-The final score is the square root of the mean of all sample errors:
-Score = sqrt( (1/N) * Σ E_n )
-
-This formulation gives more importance to cases where an alarm should be triggered (predicted level ≥ 0.5).
-
-
----
-
-## 🚧 Current Progress (October 2025)
-
-The project is currently in progress and includes three main stages:
-
-### 1️⃣ **Exploratory Data Analysis (EDA)**  
-- Duplicate and missing value handling  
-- Outlier and feature distribution analysis  
-- Correlation study between features and targets  
-- Basic target normalization and scaling  
-📘 Notebook: [`01_eda.ipynb`](./notebooks/01_eda.ipynb)
-
----
-
-### 2️⃣ **Baseline Model – Random Forest**  
-- Implemented `RandomForestRegressor` with `MultiOutputRegressor`  
-- Established first baseline with public leaderboard score ≈ **0.1523 (wMAE)**  
 📘 Notebook: [`02_baseline_random_forest.ipynb`](./notebooks/02_baseline_random_forest.ipynb)
 
 ---
 
 ### 3️⃣ **XGBRegressor – Randomized Search Optimization**  
-- Implemented individual **XGBRegressor per target**  
-- Hyperparameter tuning with `RandomizedSearchCV`  
-- Added **early stopping** and **regularization** to improve generalization  
+- Implemented one **XGBRegressor per target variable**  
+- Tuned hyperparameters with `RandomizedSearchCV`  
+- Added **early stopping**, **regularization**, and clipping in [0,1]  
 📘 Notebook: [`03_xgb_randomsearch.ipynb`](./notebooks/03_xgb_randomsearch.ipynb)
 
 ---
 
 ## 📈 Next Steps
-- Integrate **adversarial validation** to handle train/test drift  
-- Experiment with **feature engineering** (humidity normalization, percentile clipping)  
-- Add **LightGBM** and **stacking/blending** approaches  
-- Perform **cross-validation** and finalize model selection  
+- Integrate **adversarial validation** to detect train/test shifts  
+- Add **feature engineering** (humidity percentile ranking, drift correction)  
+- Experiment with **LightGBM** and **stacked ensemble methods**  
+- Explore **regularization and Bayesian optimization**
 
 ---
 
 ## ⚙️ Tools and Libraries
 - **Python**, **NumPy**, **Pandas**, **Matplotlib**, **Seaborn**  
 - **Scikit-learn**, **XGBoost**  
-- **Google Colab**, **GitHub**
+- **Google Colab**, **Git**, **LaTeX**
 
 ---
 
@@ -138,3 +71,4 @@ The project is currently in progress and includes three main stages:
 Master 2 – Mathematics, Statistics and Learning (MS2A)  
 Sorbonne Université, Paris  
 📧 [tom.deoliveira@hotmail.fr](mailto:tom.deoliveira@hotmail.fr)
+
