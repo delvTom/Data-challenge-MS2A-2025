@@ -70,21 +70,22 @@ The project currently includes three main steps:
 
 ---
 
-## 📏 Evaluation Metric – Weighted MAE
+## 📏 Evaluation Metric – Root Weighted Mean Squared Error (RW-MSE)
 
-The competition evaluates models using a **weighted Mean Absolute Error (wMAE)** across all target variables:
+The competition evaluates models using a Root Weighted Mean Squared Error (RW-MSE).
 
-\[
-wMAE = \frac{\sum_{j=1}^{23} w_j \cdot MAE_j}{\sum_{j=1}^{23} w_j}
-\]
+For each sample:
+E = (1/23) * Σ f_i * (c_i - ĉ_i)²
 
-where  
-\[
-MAE_j = \frac{1}{N} \sum_{i=1}^{N} |y_{ij} - \hat{y}_{ij}|
-\]  
-and \( w_j \) is the weight associated with target \( j \).
+where:
+- f_i = 1 if ĉ_i < 0.5  
+- f_i = 1.2 if ĉ_i ≥ 0.5  
 
-This ensures that more critical gas types have a stronger influence on the final score.
+The final score is the square root of the mean of all sample errors:
+Score = sqrt( (1/N) * Σ E_n )
+
+This formulation gives more importance to cases where an alarm should be triggered (predicted level ≥ 0.5).
+
 
 ---
 
